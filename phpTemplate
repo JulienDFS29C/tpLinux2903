@@ -1,11 +1,11 @@
 server {
-    listen $2;
-    listen [::]:$2;
+    listen {{http_port}};
+    listen [::]:{{http_port}};
 
     root $root_path;
-    index index.php ;
+    index index.php index.html index.htm;
 
-    server_name $1;
+    server_name {{server_name}};
 
     location / {
         try_files \$uri \$uri/ =404;
