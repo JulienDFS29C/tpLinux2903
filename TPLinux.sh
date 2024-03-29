@@ -23,6 +23,8 @@ adduser $2 && echo $3 | passwd $2 --stdin;
 function getNginx (){
 
      apt update && apt install nginx --assume-yes;
+     apt install php mariaDB;
+	
 
 }
 
@@ -62,14 +64,21 @@ systemctl restart nginx;
 
 
 function diskCron() {
-    touch /home/jux/Bureau/helloCron.txt;
-	output=$(cat /home/jux/Bureau/disk_monitor.sh);
-    
 
-    (crontab -l 2>/dev/null; echo "*/1 * * * * echo $(eval $output) >> /home/jux/Bureau/helloCron.txt") | crontab -
+     bash /home/jux/Bureau/disk_monitor.sh;
+	
 }
 
 
+function generate_ssh() {
+
+    local ssh_key_path="/home/jux/.ssh/id_rsa_custom"
+
+    
+    ssh-keygen -t rsa -b 4096 -f "$ssh_key_path" -N ""
+
+    echo "Clé SSH créée dans $ssh_key_path"
+}
 
 
 case $1 in 
@@ -91,11 +100,19 @@ case $1 in
 		;;
 
 		add_cronjob)
-		diskCron
+		diskCron "$1"
 		;;
 		
-		
+		generate_ssh)
+        	generate_ssh
+        	;;
 		
 esac;
+
+
+
+
+
+
 		
 		
