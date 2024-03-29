@@ -1,21 +1,31 @@
 <?php
-$server_name = "sthg";
+$servername = "localhost";
+$dbname = "contenu_du_frigo";
+$username = "admin";
+$password = "admin";
 
-echo '
-<!DOCTYPE html>
-<html>
-<head>
-<title>Welcome to' .$server_name.'!</title>
-<style>
-html { color-scheme: light dark; }
-body { width: 35em; margin: 0 auto;
-font-family: Tahoma, Verdana, Arial, sans-serif; }
-</style>
-</head>
-<body>
-<h1>Welcome to' .$server_name.'!</h1>
+try {
+        $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-</body>
-</html>
-'
-/?>
+        $sql = "SELECT boissons, charcuterie, fromage FROM inventaire";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+        if($stmt->rowCount() > 0) {
+            foreach($stmt->fetchAll() as $row) {
+                echo "Boissons: " . htmlspecialchars($row["boissons"]).
+                " - Charcuterie: " . htmlspecialchars($row["charcuterie"]).
+                " - Fromage: " . htmlspecialchars($row["fromage"]). "<br>";
+            }
+        } else {
+            echo "0 results";
+        }
+} catch(PDOException $e) {
+        echo "Erreur : " . $e->getMessage();
+}
+
+$conn = null;
+?>
