@@ -20,10 +20,10 @@ adduser $2 && echo $3 | passwd $2 --stdin;
 }
 
 
-function getNginx (){
+function getInstall (){
 
-     apt update && apt install nginx --assume-yes;
-     apt install php mariaDB;
+     apt update && apt install nginx php mariadb-client mariadb-server --assume-yes;
+ 
 	
 
 }
@@ -43,12 +43,12 @@ function siteConfig(){
 	if [ -f "/var/www/$2" ]; then
 			echo "répertoire $2 déjà créé"
 	elif [ -f "/var/www/$2/index.hml" ]; then
-			echo "fichier $2 déjà créé"
+			echo "fichier $2 déjà créé"crontab -e
 	else
 			mkdir "/var/www/$2";
-			cp "/home/jux/Bureau/indexTemplate.html"  "/var/www/$2/index.hml";
+			cp "/home/jux/Bureau/indexTemplate.html"  "/var/www/$2/index.html";
 			echo "fichier $2 créé";
-			sed -i "s/{{server_name}}/$2/g" "/var/www/$2/index.hml";
+			sed -i "s/{{server_name}}/$2/g" "/var/www/$2/index.html";
 				
 	fi;
 	
@@ -65,7 +65,10 @@ systemctl restart nginx;
 
 function diskCron() {
 
-     bash /home/jux/Bureau/disk_monitor.sh;
+
+ 	(crontab -l; echo "*/5 * * * * /home/jux/Bureau/disk_monitor.sh") | crontab -
+    
+    	echo "exécution de planifiée toutes les 5 minutes."
 	
 }
 
@@ -80,6 +83,40 @@ function generate_ssh() {
     echo "Clé SSH créée dans $ssh_key_path"
 }
 
+function phpSiteConfig(){
+
+echo "$1";
+	
+		cp "/home/jux/Bureau/phpTemplate" "/etc/nginx/sites-available/$2"
+		echo "création du fichier $2";
+	
+	
+	
+	
+	sed -i "s/{{http_port}}/$3/g" "/etc/nginx/sites-available/$2";
+	sed -i "s/{{server_name}}/$2/g" "/etc/nginx/sites-available/$2";
+	
+	if [ -f "/var/www/$2" ]; then
+			echo "répertoire $2 déjà créé"
+	elif [ -f "/var/www/$2/index.hml" ]; then
+			echo "fichier $2 déjà créé"crontab -e
+	else
+			mkdir "/var/www/$2";
+			cp "/home/jux/Bureau/phpTemplate.php"  "/var/www/$2/index.php";
+			echo "fichier $2 créé";
+			sed -i "s/{{server_name}}/$2/g" "/var/www/$2/index.hml";
+				
+	fi;
+
+
+    ln -s "$site_path" /etc/nginx/sites-enabled/
+
+
+    nginx -t && systemctl restart nginx
+    echo "PHP site $1 configured on port $2."
+
+}
+
 
 case $1 in 
 
@@ -87,8 +124,8 @@ case $1 in
 		createUser "$2" "$3"
 		;;
 		
-		nginx)
-		getNginx
+		get_install)
+		getInstall
 		;;
 		
 		configure_site)
@@ -106,6 +143,13 @@ case $1 in
 		generate_ssh)
         	generate_ssh
         	;;
+
+		configure_php_site)
+		phpSiteConfig "$1" "$2" "$3"
+		;;
+		
+
+
 		
 esac;
 
