@@ -86,7 +86,7 @@ echo "$1";
 			echo "fichier $2 déjà créé"crontab -e
 	else
 			mkdir "/var/www/$2";
-			cp "/home/jux/Bureau/phpTemplate.php"  "/var/www/$2/index.php";
+			cp "/home/jux/Bureau/indexTemplate.php"  "/var/www/$2/index.php";
 			echo "fichier $2 créé";
 			sed -i "s/{{server_name}}/$2/g" "/var/www/$2/index.hml";
 	fi;
