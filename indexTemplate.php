@@ -8,8 +8,8 @@ try {
         $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        $sql = "SELECT boissons, charcuterie, fromage FROM inventaire";
-        $stmt = $conn->prepare($sql);
+        $mariadb = "SELECT boissons, charcuterie, fromage FROM inventaire";
+        $stmt = $conn->prepare($mariadb);
         $stmt->execute();
 
         $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
