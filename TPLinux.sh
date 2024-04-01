@@ -108,10 +108,16 @@ echo "$1";
 }
 
   DB_NAME="contenu_du_frigo"
+<<<<<<< HEAD
   mysql -u admin -p'your_password' -e "CREATE DATABASE IF NOT EXISTS $DB_NAME;"
   mysql -u admin -p'your_password' -e "USE $DB_NAME; CREATE TABLE IF NOT EXISTS inventaire (boissons VARCHAR(255), charcuterie VARCHAR(255), fromage VARCHAR(255));" $DB_NAME
 
   # Remplacer 'your_password' par le mot de passe réel de l'utilisateur 'admin'
+=======
+  mysql -u admin -padmin -e "CREATE DATABASE IF NOT EXISTS $DB_NAME;"
+  mysql -u admin -padmin -e "USE $DB_NAME; CREATE TABLE IF NOT EXISTS inventaire (boissons VARCHAR(255), charcuterie VARCHAR(255), fromage VARCHAR(255));" $DB_NAME
+
+>>>>>>> cbfa0c6 (Update phpTemplate)
 fi
 
 case $1 in 
@@ -143,10 +149,17 @@ case $1 in
 		configure_php_site)
 		phpSiteConfig "$1" "$2" "$3"
 		;;
+<<<<<<< HEAD
 
 		*)
 
+=======
+>>>>>>> cbfa0c6 (Update phpTemplate)
 
+		*)
+	    echo "Usage: $0 {user|install|configure_site|active_site|add_cronjob|generate_ssh|configure_php_site|}"
+        exit 1
+        ;;
 
 esac;
 
